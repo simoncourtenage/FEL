@@ -8,8 +8,14 @@
 #ifndef _CONFIG_H
 #define	_CONFIG_H
 
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
 class Config {
 private:
+    po::variables_map;
+
     static Config* instance_;
     /** creates a config object, reading from a default config file */
     Config();
