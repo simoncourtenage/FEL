@@ -1,7 +1,5 @@
 #include "simplebroker.h"
-
-using namespace fel;
-
+#include "brokerfactory.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,12 +14,30 @@ using namespace fel;
 #include <boost/program_options.hpp>
 #endif
 
+using namespace fel;
+
+
 void error(const char* msg)
 {
     perror(msg);
     exit(1);
 }
 
+/**
+ * send connection messages to neighbouring nodes
+ */
+void SimpleBroker::init()
+{
+  MessagePtr msgptr(new ConnectionMessage(myip,myport));
+  vector<Neighbour>::iterator vi;
+  for (vi = neighbours.begin();vi != neighbours.end(); vi++) {
+    send(msgptr,(*vi));
+  }
+}
+
+/**
+ * start listening as server on given port
+ */
 void SimpleBroker::run()
 {
     int sockfd, newsockfd, pid;

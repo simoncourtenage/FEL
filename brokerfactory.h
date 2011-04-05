@@ -8,15 +8,25 @@
 #ifndef _BROKERFACTORY_H
 #define	_BROKERFACTORY_H
 
-#include "config.h"
+#include "brokerconfig.h"
+#include <boost/shared_ptr.hpp>
 
 class BrokerFactory {
 public:
-    static BrokerFactory* getFactory(Config& c) = 0;
-    virtual Broker* getBroker(const BrokerConfig*) = 0;
-    virtual BrokerConfig* getBrokerConfig(int,char**);
+  static BrokerFactoryPtr getFactory();
+    virtual BrokerPtr getBroker(BrokerConfigPtr& ptr) = 0;
+    virtual BrokerConfigPtr getBrokerConfig() = 0;
 };
 
+typdef boost::shared_ptr<BrokerFactory> FactoryPtr
+
+class SimpleBrokerFactory : public BrokerFactory {
+public:
+  BrokerPtr getBroker(BrokerConfigPtr& ptr)
+  {
+    return BrokerPtr(new SimpleBroker(ptr->getIpAddress(),ptr->getPort(),ptr->getNeighbours()));
+  }
+};
 
 #endif	/* _BROKERFACTORY_H */
 

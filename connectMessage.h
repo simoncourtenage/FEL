@@ -18,7 +18,7 @@ private:
   std::string ipaddr;
   int port;
 public:
-  ConnectMessage(string ia,int p) : ipaddr(ia), port(p) {}
+  ConnectMessage(std::string ia,int p) : ipaddr(ia), port(p) {}
   std::string getMessage();
 };
 

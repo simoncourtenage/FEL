@@ -1,9 +1,11 @@
 #include "connectMessage.h"
 
+using namespace fel;
+
 std::string getMessage()
 {
-  str sep = Message::getFieldSeparator();
-  string str("");
+  std::string sep = Message::getFieldSeparator();
+  std::string str("");
   str += Message::getMessageHeader(Message::CONN);
   str += sep;
   str += ipaddr;

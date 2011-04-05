@@ -14,19 +14,35 @@ namespace po = boost::program_options;
 
 class Config {
 private:
-    po::variables_map;
-
+    po::variables_map vars;
+    po::options_description options;
     static Config* instance_;
     /** creates a config object, reading from a default config file */
-    Config();
+    Config(int,char**);
 public:
-        static Config* getInstance()
+    static Config* getInstance()
     {
-        if (instance_ == (Config*)0) {
-            instance_ = new Config();
-        }
-        return instance_;
+      if (instance_ == (Config*)0) {
+	instance_ = new Config(0,0);
+      }
+      return instance_;
+      
+    }
+    static void init(int argc,char** argv)
+    {
+      if (instance_ == (Config*)0) {
+	instance_ = new Config(argc,argv);
+      }
+    }
 
+    // object member functions
+    template <typename T> T get(const std::string& name) const {
+      if (vars.count(name) > 0) {
+	return vars[name.c_str()].as<T>();
+      }
+      else {
+	return T();
+      }
     }
 };
 
