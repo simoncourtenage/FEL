@@ -8,12 +8,21 @@
 #include <strings.h>
 #include <string.h>
 
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 using namespace fel;
 
 void Broker::send(MessagePtr msg,const Neighbour& n)
 {
   std::string ip = n.ip_addr;
   int port = n.port;
+
+#ifdef DEBUG
+  std::cerr << "Sending to " << ip << ":" << port << "..." << std::endl;
+  std::cerr << "Message to send is " << msg->getMessage() << "..." << std::endl;
+#endif
 
   struct sockaddr_in serv_addr;
   int sockfd;

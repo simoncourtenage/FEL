@@ -26,7 +26,7 @@ public:
     void send(MessagePtr msgptr,const Neighbour& neighbour);
 };
 
- typedef boost::shared_ptr<Broker> BrokerPtr;
+typedef boost::shared_ptr<Broker> BrokerPtr;
 
 }
 

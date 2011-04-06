@@ -1,5 +1,6 @@
 #include "simplebroker.h"
 #include "brokerfactory.h"
+#include "connectMessage.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,13 +10,15 @@
 #include <netinet/in.h>
 
 #include <iostream>
+#include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp> // used to parse neighbour information
 
 #ifdef DEBUG
 #include <boost/program_options.hpp>
 #endif
 
 using namespace fel;
-
+using namespace boost;
 
 void error(const char* msg)
 {
@@ -24,12 +27,34 @@ void error(const char* msg)
 }
 
 /**
+ * parse the string containing information about ip addresses and ports of
+ * neighbouring nodes
+ */
+void SimpleBroker::parseNeighbours(std::vector<Neighbour>& ns,const std::string& nodes)
+{
+  char_separator<char> sep(",");
+  tokenizer<char_separator<char> > tokens(nodes,sep);
+  BOOST_FOREACH(std::string n,tokens)
+    {
+      std::string::size_type pos = n.find_first_of(":");
+      if (pos == 0 || pos == std::string::npos) {
+	throw std::runtime_error("bad neighbour node info");
+      }
+      std::string ip = n.substr(0,pos);
+      int port = atoi(n.substr(pos+1,std::string::npos).c_str());
+      Neighbour neighbour;
+      neighbour.ip_addr = ip;
+      neighbour.port = port;
+      ns.push_back(neighbour);
+    }
+}
+/**
  * send connection messages to neighbouring nodes
  */
 void SimpleBroker::init()
 {
-  MessagePtr msgptr(new ConnectionMessage(myip,myport));
-  vector<Neighbour>::iterator vi;
+  MessagePtr msgptr(new ConnectMessage(myip,myport));
+  std::vector<Neighbour>::iterator vi;
   for (vi = neighbours.begin();vi != neighbours.end(); vi++) {
     send(msgptr,(*vi));
   }
@@ -92,9 +117,10 @@ void SimpleBroker::execute(int fd)
 
 int main(int argc,char**argv)
 {
-    BrokerFactory* factory = Config::getBrokerFactory();
-    BrokerConfig* brokerconfig = factory->getBrokerConfig(argc,argv);
-    Broker* broker = factory->getBroker(brokerconfig)
+  Config::init(argc,argv);
+  BrokerFactoryPtr factory = BrokerFactory::getFactory();
+  BrokerPtr broker = factory->getBroker();
+  broker->run();
 }
 
 #endif

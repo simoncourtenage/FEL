@@ -7,7 +7,7 @@
 
 #ifndef _MESSAGE_H
 #define	_MESSAGE_H
-
+#include <string>
 #include <boost/shared_ptr.hpp>
 
 namespace fel {
@@ -21,7 +21,7 @@ public:
 
   
   static std::string getFieldSeparator()
-  { return string(":"); }
+  { return ":"; }
   static std::string getMessageEnd()
   { return ""; }
   static std::string getMessageHeader(MSGTYPE type)
