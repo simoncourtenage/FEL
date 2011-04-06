@@ -1,3 +1,4 @@
+#include "header.h"
 #include "simplebroker.h"
 #include "brokerfactory.h"
 #include "connectMessage.h"
@@ -109,18 +110,22 @@ void SimpleBroker::execute(int fd)
     char buffer[256];
     bzero(buffer,256);
     n = read(fd,buffer,255);
-    std::cout << buffer << std::endl;
-
+    std::string msg(buffer);
+    std::string::size_type pos = msg.find_first_of(":");
+    if (pos == 0 || pos == std::string::npos) {
+      throw std::runtime_error("bad message received");
+    }
+    std::string msgtype = msg.substr(0,pos);
+    if (msgtype == "CONN") {
+      // connect message received from neighbour, so add to neighbours
+      ConnectMessage connmsg(msg);
+      Neighbour neighbour;
+      neighbour.ip_addr = connmsg.getIPAddress();
+      neighbour.port = connmsg.getPort();
+      std::cerr << "Adding new neighbour " << neighbour.ip_addr << ":" << neighbour.port << std::endl;
+      neighbours.push_back(neighbour);
+    }
 }
 
-#ifdef DEBUG
 
-int main(int argc,char**argv)
-{
-  Config::init(argc,argv);
-  BrokerFactoryPtr factory = BrokerFactory::getFactory();
-  BrokerPtr broker = factory->getBroker();
-  broker->run();
-}
 
-#endif

@@ -6,6 +6,8 @@
 #include <iostream>
 #endif
 
+using namespace fel;
+
 Config* Config::instance_ = (Config*)0;
 
 

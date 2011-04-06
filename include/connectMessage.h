@@ -19,7 +19,10 @@ private:
   int port;
 public:
   ConnectMessage(std::string ia,int p) : ipaddr(ia), port(p) {}
-  std::string getMessage();
+  ConnectMessage(std::string contents);
+  std::string getMessage() const;
+  std::string getIPAddress() const { return ipaddr; }
+  int getPort() const { return port; }
 };
 
 }

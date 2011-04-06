@@ -15,7 +15,7 @@ namespace fel {
 class Message {
 public:
   Message() {}
-  virtual std::string getMessage() = 0;
+  virtual std::string getMessage()const  = 0;
 
   enum MSGTYPE { CONN };
 

@@ -12,6 +12,8 @@
 
 namespace po = boost::program_options;
 
+namespace fel {
+
 class Config {
 private:
   po::variables_map vars;
@@ -34,6 +36,12 @@ public:
       instance_ = new Config(argc,argv);
     }
   }
+
+  static int verbose() {
+    Config* instance = Config::getInstance();
+    int verbosity = instance->get<int>("verbosity");
+    return verbosity;
+  }
   
     // object member functions
   template <typename T> T get(const std::string& name) const {
@@ -46,6 +54,7 @@ public:
   }
 };
 
+}
 
 #endif	/* _CONFIG_H */
 
