@@ -119,10 +119,14 @@ void SimpleBroker::execute(int fd)
     if (msgtype == "CONN") {
       // connect message received from neighbour, so add to neighbours
       ConnectMessage connmsg(msg);
+      time_t msgtime = connmsg.getTimestamp();
       Neighbour neighbour;
+      updateBrokerMessages(neighbour,msgtime);
       neighbour.ip_addr = connmsg.getIPAddress();
       neighbour.port = connmsg.getPort();
-      std::cerr << "Adding new neighbour " << neighbour.ip_addr << ":" << neighbour.port << std::endl;
+      std::cerr << "Connect message received from "
+		<< neighbour.ip_addr << ":" << neighbour.port
+		<< " timestamped " << ctime(&msgtime) << std::endl;
       neighbours.push_back(neighbour);
     }
 }

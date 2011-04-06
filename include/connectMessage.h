@@ -17,9 +17,14 @@ class ConnectMessage : public Message {
 private:
   std::string ipaddr;
   int port;
+  time_t timestamp;
 public:
   ConnectMessage(std::string ia,int p) : ipaddr(ia), port(p) {}
   ConnectMessage(std::string contents);
+
+  /** return the timestamp associated with this message - undefined if timestamp not set */
+  time_t getTimestamp() const { return timestamp; }
+  
   std::string getMessage() const;
   std::string getIPAddress() const { return ipaddr; }
   int getPort() const { return port; }

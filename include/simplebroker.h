@@ -9,7 +9,10 @@
 #define	_SIMPLEBROKER_H
 
 #include <vector>
+#include <sstream>
+#include <map>
 #include <string>
+#include <ctime>
 #include "broker.h"
 
 namespace fel {
@@ -19,6 +22,24 @@ private:
     std::string myip;
     int myport;
     std::vector<Neighbour> neighbours;
+
+    std::map<std::string,time_t> lastBrokerMessages;
+
+    std::string neighbour2String(const Neighbour& n)
+      {
+	std::stringstream sbuf;
+	sbuf << n.port;
+	std::string nstr = n.ip_addr;
+	nstr += ":";
+	nstr += sbuf.str();
+	return nstr;
+      }
+
+    void updateBrokerMessages(const Neighbour& n,const time_t& t)
+    {
+      std::string n_id = neighbour2String(n);
+      lastBrokerMessages[n_id] = t;
+    }
 
     void parseNeighbours(std::vector<Neighbour>& ns,const std::string& nodes);
 

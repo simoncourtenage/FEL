@@ -9,16 +9,18 @@
 #define	_MESSAGE_H
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <ctime>
 
 namespace fel {
 
 class Message {
 public:
   Message() {}
-  virtual std::string getMessage()const  = 0;
+  virtual std::string getMessage() const  = 0;
 
   enum MSGTYPE { CONN };
 
+  virtual time_t getTimestamp() const = 0;
   
   static std::string getFieldSeparator()
   { return ":"; }
