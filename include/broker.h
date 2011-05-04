@@ -10,6 +10,7 @@
 
 #include <string>
 #include "message.h"
+#include "brokeraddress.h"
 #include <boost/shared_ptr.hpp>
 
 namespace fel {
@@ -18,12 +19,7 @@ class Broker {
 public:
     virtual void run() = 0;
 
-    typedef struct {
-      std::string ip_addr;
-      int port;
-    } Neighbour;
-
-    void send(MessagePtr msgptr,const Neighbour& neighbour);
+    void send(MessagePtr msgptr,const BrokerAddressPtr& neighbour);
 };
 
 typedef boost::shared_ptr<Broker> BrokerPtr;

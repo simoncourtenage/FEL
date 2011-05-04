@@ -31,7 +31,7 @@ void error(const char* msg)
  * parse the string containing information about ip addresses and ports of
  * neighbouring nodes
  */
-void SimpleBroker::parseNeighbours(std::vector<Neighbour>& ns,const std::string& nodes)
+void SimpleBroker::parseNeighbours(std::vector<BrokerAddressPtr>& ns,const std::string& nodes)
 {
   char_separator<char> sep(",");
   tokenizer<char_separator<char> > tokens(nodes,sep);
@@ -43,9 +43,7 @@ void SimpleBroker::parseNeighbours(std::vector<Neighbour>& ns,const std::string&
       }
       std::string ip = n.substr(0,pos);
       int port = atoi(n.substr(pos+1,std::string::npos).c_str());
-      Neighbour neighbour;
-      neighbour.ip_addr = ip;
-      neighbour.port = port;
+      BrokerAddressPtr neighbour(new BrokerAddress(ip,port);
       ns.push_back(neighbour);
     }
 }
@@ -55,7 +53,7 @@ void SimpleBroker::parseNeighbours(std::vector<Neighbour>& ns,const std::string&
 void SimpleBroker::init()
 {
   MessagePtr msgptr(new ConnectMessage(myip,myport));
-  std::vector<Neighbour>::iterator vi;
+  std::vector<BrokerAddressPtr>::iterator vi;
   for (vi = neighbours.begin();vi != neighbours.end(); vi++) {
     send(msgptr,(*vi));
   }
@@ -120,12 +118,10 @@ void SimpleBroker::execute(int fd)
       // connect message received from neighbour, so add to neighbours
       ConnectMessage connmsg(msg);
       time_t msgtime = connmsg.getTimestamp();
-      Neighbour neighbour;
+      BrokerAddressPtr neighbour(new BrokerAddress(connmsg.getIPAddress(),connmsg.getPort()));
       updateBrokerMessages(neighbour,msgtime);
-      neighbour.ip_addr = connmsg.getIPAddress();
-      neighbour.port = connmsg.getPort();
       std::cerr << "Connect message received from "
-		<< neighbour.ip_addr << ":" << neighbour.port
+		<< connmsg.getIPAddress() << ":" << connmsg.getPort()
 		<< " timestamped " << ctime(&msgtime) << std::endl;
       neighbours.push_back(neighbour);
     }

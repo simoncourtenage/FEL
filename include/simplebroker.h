@@ -21,27 +21,17 @@ class SimpleBroker : public Broker {
 private:
     std::string myip;
     int myport;
-    std::vector<Neighbour> neighbours;
+    std::vector<BrokerAddressPtr> neighbours;
 
     std::map<std::string,time_t> lastBrokerMessages;
 
-    std::string neighbour2String(const Neighbour& n)
-      {
-	std::stringstream sbuf;
-	sbuf << n.port;
-	std::string nstr = n.ip_addr;
-	nstr += ":";
-	nstr += sbuf.str();
-	return nstr;
-      }
-
-    void updateBrokerMessages(const Neighbour& n,const time_t& t)
+    void updateBrokerMessages(const BrokerAddressPtr n,const time_t& t)
     {
-      std::string n_id = neighbour2String(n);
+      std::string n_id = n->toString();
       lastBrokerMessages[n_id] = t;
     }
 
-    void parseNeighbours(std::vector<Neighbour>& ns,const std::string& nodes);
+    void parseNeighbours(std::vector<BrokerAddressPtr>& ns,const std::string& nodes);
 
     SimpleBroker(); /** default constructor - not implemented */
     /** assignment operator - not implemented */
